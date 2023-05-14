@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view_top"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/margin_500dp"
+    android:layout_marginEnd="@dimen/margin_8dp"
+    android:layout_marginStart="@dimen/margin_8dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:id="@+id/lyt_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/post_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/light_gray"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:id="@+id/lyt_secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/rectangle_transparent"
+            android:padding="@dimen/margin_8dp">
+
+            <ImageButton
+                android:id="@+id/btn_fav"
+                android:layout_width="@dimen/margin_35dp"
+                android:layout_height="@dimen/margin_35dp"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/margin_10dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/margin_8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_un_fav" />
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/margin_8dp"
+                android:layout_marginStart="@dimen/margin_8dp"
+                android:layout_toStartOf="@+id/btn_fav"
+                android:fontFamily="@font/libre_franklin"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                tools:text="This" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
