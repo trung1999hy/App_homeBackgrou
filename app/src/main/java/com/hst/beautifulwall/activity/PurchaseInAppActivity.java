@@ -125,15 +125,15 @@ public class PurchaseInAppActivity extends AppCompatActivity implements Purchase
         );
     }
 
-    @Override
-    public void onBackPressed() {
-        try {
-            super.onBackPressed();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finish();
-    }
+//    @Override
+//    public void onBackPressed() {
+//        try {
+//            super.onBackPressed();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        finish();
+//    }
 
     private ImmutableList<QueryProductDetailsParams.Product> getInAppProductList() {
         ImmutableList<QueryProductDetailsParams.Product> productList = ImmutableList.of(
