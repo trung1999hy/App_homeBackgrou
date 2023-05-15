@@ -49,6 +49,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         private RelativeLayout lytContainer;
         private ListItemClickListener itemClickListener;
 
+        private RelativeLayout pointLayout;
 
         public ViewHolder(View itemView, int viewType, ListItemClickListener itemClickListener) {
             super(itemView);
@@ -58,6 +59,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             categoryImg = (ImageView) itemView.findViewById(R.id.category_img);
             categoryTitle = (TextView) itemView.findViewById(R.id.category_name);
             lytContainer = (RelativeLayout) itemView.findViewById(R.id.lyt_container);
+            pointLayout = (RelativeLayout) itemView.findViewById(R.id.point_layout);
 
             lytContainer.setOnClickListener(this);
 

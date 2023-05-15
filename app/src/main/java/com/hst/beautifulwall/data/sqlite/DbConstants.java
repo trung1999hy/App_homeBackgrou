@@ -36,6 +36,7 @@ public class DbConstants implements BaseColumns {
     public static final String POST_TITLE = "post_title";
     public static final String POST_IMAGE_URL = "post_image_url";
     public static final String POST_CATEGORY = "post_category";
+    public static final String IS_NEED_POINT = "is_need_point";
 
     public static final String SQL_CREATE_FAVOURITE_ENTRIES =
             "CREATE TABLE " + FAVORITE_TABLE_NAME + " (" +

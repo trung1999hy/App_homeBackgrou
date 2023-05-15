@@ -84,7 +84,7 @@ public class FavoriteListActivity extends BaseActivity {
         mPostList.clear();
         for (int i = 0; i < mFavouriteList.size(); i++) {
             FavoriteModel model = mFavouriteList.get(i);
-            Posts post = new Posts(model.getTitle(), model.getPostCategory(), AppConstant.EMPTY_STRING, model.getImageUrl(), true);
+            Posts post = new Posts(model.getTitle(), model.getPostCategory(), AppConstant.EMPTY_STRING, model.getImageUrl(), true, model.isNeedPont());
             mPostList.add(post);
         }
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -51,6 +52,7 @@ public class PostsPagerAdapter extends PagerAdapter {
         final TextView titleTextView = (TextView) rootView.findViewById(R.id.title_text);
         final ImageView imgPost = (ImageView) rootView.findViewById(R.id.post_img);
         final CardView cardView = (CardView) rootView.findViewById(R.id.card_view_top);
+        final RelativeLayout pointLayout = rootView.findViewById(R.id.point_layout);
 
         final Posts model = mItemList.get(position);
 
@@ -60,6 +62,13 @@ public class PostsPagerAdapter extends PagerAdapter {
             Glide.with(mContext)
                     .load(imgUrl)
                     .into(imgPost);
+        }
+
+        if (model.getIsNeedPoint()) {
+            pointLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            pointLayout.setVisibility(View.GONE);
         }
 
         titleTextView.setText(Html.fromHtml(model.getTitle()));

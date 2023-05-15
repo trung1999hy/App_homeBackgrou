@@ -69,7 +69,6 @@ public class FavoriteDbController {
                     String imageUrl = c.getString(c.getColumnIndexOrThrow(DbConstants.POST_IMAGE_URL));
                     String postCategory = c.getString(c.getColumnIndexOrThrow(DbConstants.POST_CATEGORY));
 
-
                     // wrap up data list and return
                     favDataArray.add(new FavoriteModel(itemId, postTitle, imageUrl, postCategory));
                 } while (c.moveToNext());

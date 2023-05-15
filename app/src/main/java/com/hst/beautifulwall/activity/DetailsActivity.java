@@ -173,10 +173,10 @@ public class DetailsActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if (mItemList != null) {
-                    FragmentManager manager = getSupportFragmentManager();
-                    DialogUtilities dialog = DialogUtilities.newInstance(getString(R.string.information), getString(R.string.information_detail), getString(R.string.yes), getString(R.string.no), AppConstant.BUNDLE_KEY_YES);
-                    dialog.show(manager, AppConstant.BUNDLE_KEY_DIALOG_FRAGMENT);
-                   // ActivityUtilities.getInstance().invokeWallPreviewNCropSetActiviy(mActivity, WallCropNSetActivity.class, mItemList.get(mViewPager.getCurrentItem()).getImageUrl(), false);
+                 //   FragmentManager manager = getSupportFragmentManager();
+                 //   DialogUtilities dialog = DialogUtilities.newInstance(getString(R.string.information), getString(R.string.information_detail), getString(R.string.yes), getString(R.string.no), AppConstant.BUNDLE_KEY_YES);
+                 //   dialog.show(manager, AppConstant.BUNDLE_KEY_DIALOG_FRAGMENT);
+                    ActivityUtilities.getInstance().invokeWallPreviewNCropSetActiviy(mActivity, WallCropNSetActivity.class, mItemList.get(mViewPager.getCurrentItem()).getImageUrl(), false);
                 }
             }
         });
@@ -185,10 +185,10 @@ public class DetailsActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if (mItemList != null) {
-                    FragmentManager manager = getSupportFragmentManager();
-                    DialogUtilities dialog = DialogUtilities.newInstance(getString(R.string.information), getString(R.string.information_detail), getString(R.string.yes), getString(R.string.no), "download");
-                    dialog.show(manager, AppConstant.BUNDLE_KEY_DIALOG_FRAGMENT);
-                    //AppUtilities.downloadFile(mContext, mActivity, mBitmap);
+                  //  FragmentManager manager = getSupportFragmentManager();
+                  //  DialogUtilities dialog = DialogUtilities.newInstance(getString(R.string.information), getString(R.string.information_detail), getString(R.string.yes), getString(R.string.no), "download");
+                  //  dialog.show(manager, AppConstant.BUNDLE_KEY_DIALOG_FRAGMENT);
+                    AppUtilities.downloadFile(mContext, mActivity, mBitmap);
                 }
             }
         });

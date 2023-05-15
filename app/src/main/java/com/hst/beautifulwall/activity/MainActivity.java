@@ -252,7 +252,13 @@ public class MainActivity extends BaseActivity {
                         }
                         break;
                     case R.id.card_view_top:
-                        ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mHomeRecentPostList, position, false);
+                        if (MyApplication.getInstance().getValueCoin() >= 2) {
+                            MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
+                            ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mHomeRecentPostList, position, false);
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+                        }
                         break;
                     default:
                         break;
@@ -409,7 +415,14 @@ public class MainActivity extends BaseActivity {
                 mPostsPagerAdapter.setItemClickListener(new ListItemClickListener() {
                     @Override
                     public void onItemClick(int position, View view) {
-                        ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mFeaturedList, position, false);
+                        if (MyApplication.getInstance().getValueCoin() >= 2) {
+                            MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
+                            ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mFeaturedList, position, false);
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 });
                 if (mFeaturedList.size() > 0) {

@@ -9,16 +9,18 @@ public class Posts implements Parcelable {
     String isFeatured;
     String imageUrl;
     boolean isFavorite;
+    boolean isNeedPoint;
 
     public Posts() {
     }
 
-    public Posts(String title, String category, String isFeatured, String imageUrl, boolean isFavorite) {
+    public Posts(String title, String category, String isFeatured, String imageUrl, boolean isFavorite, boolean isNeedPoint) {
         this.title = title;
         this.category = category;
         this.isFeatured = isFeatured;
         this.imageUrl = imageUrl;
         this.isFavorite = isFavorite;
+        this.isNeedPoint = isNeedPoint;
     }
 
     public String getTitle() {
@@ -45,6 +47,14 @@ public class Posts implements Parcelable {
         return isFavorite;
     }
 
+    public void setIsNeedPoint(boolean needPoint) {
+        isNeedPoint = needPoint;
+    }
+
+    public boolean getIsNeedPoint() {
+        return isNeedPoint;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -57,6 +67,7 @@ public class Posts implements Parcelable {
         dest.writeString(isFeatured);
         dest.writeString(imageUrl);
         dest.writeByte((byte) (isFavorite ? 1 : 0));
+        dest.writeByte((byte) (isNeedPoint ? 1 : 0));
     }
 
     protected Posts(Parcel in) {
@@ -65,6 +76,7 @@ public class Posts implements Parcelable {
         isFeatured = in.readString();
         imageUrl = in.readString();
         isFavorite = in.readByte() != 0;
+        isNeedPoint = in.readByte() != 0;
     }
 
     public static Creator<Posts> getCREATOR() {

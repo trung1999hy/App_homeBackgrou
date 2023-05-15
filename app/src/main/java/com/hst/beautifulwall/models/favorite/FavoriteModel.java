@@ -6,11 +6,21 @@ public class FavoriteModel {
     String imageUrl;
     String postCategory;
 
+    boolean isNeedPoint;
+
     public FavoriteModel(int id, String title, String imageUrl, String postCategory) {
         this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
         this.postCategory = postCategory;
+        this.isNeedPoint = isNeedPoint;
+    }
+    public FavoriteModel(int id, String title, String imageUrl, String postCategory, boolean isNeedPoint) {
+        this.id = id;
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.postCategory = postCategory;
+        this.isNeedPoint = isNeedPoint;
     }
 
     public int getId() {
@@ -35,5 +45,14 @@ public class FavoriteModel {
 
     public String getPostCategory() {
         return postCategory;
+    }
+
+
+    public void setNeedPont(boolean needPoint) {
+        isNeedPoint = needPoint;
+    }
+
+    public boolean isNeedPont() {
+        return isNeedPoint;
     }
 }

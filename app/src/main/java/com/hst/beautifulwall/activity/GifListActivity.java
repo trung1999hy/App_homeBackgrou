@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hst.beautifulwall.R;
 import com.hst.beautifulwall.adapters.HomeRecentPostAdapter;
+import com.hst.beautifulwall.app.MyApplication;
 import com.hst.beautifulwall.data.constant.AppConstant;
 import com.hst.beautifulwall.data.sqlite.FavoriteDbController;
 import com.hst.beautifulwall.listeners.ListItemClickListener;
@@ -109,7 +110,13 @@ public class GifListActivity extends BaseActivity {
                         }
                         break;
                     case R.id.card_view_top:
-                        ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mContentList, position, false);
+                        if (MyApplication.getInstance().getValueCoin() >= 2) {
+                            MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
+                            ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mContentList, position, false);
+                        }
+                        else {
+                            Toast.makeText(GifListActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+                        }
                         break;
                     default:
                         break;

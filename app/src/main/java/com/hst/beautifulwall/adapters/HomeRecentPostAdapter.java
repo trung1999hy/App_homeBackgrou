@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -51,6 +52,8 @@ public class HomeRecentPostAdapter extends RecyclerView.Adapter<HomeRecentPostAd
         private ImageButton btnFav;
         private ListItemClickListener itemClickListener;
 
+        private RelativeLayout pointLayout;
+
 
         public ViewHolder(View itemView, int viewType, ListItemClickListener itemClickListener) {
             super(itemView);
@@ -61,10 +64,10 @@ public class HomeRecentPostAdapter extends RecyclerView.Adapter<HomeRecentPostAd
             imgPost = (ImageView) itemView.findViewById(R.id.post_img);
             tvTitle = (TextView) itemView.findViewById(R.id.title_text);
             btnFav = (ImageButton) itemView.findViewById(R.id.btn_fav);
+            pointLayout = (RelativeLayout) itemView.findViewById(R.id.point_layout);
 
             btnFav.setOnClickListener(this);
             cardView.setOnClickListener(this);
-
         }
 
         @Override
@@ -99,6 +102,12 @@ public class HomeRecentPostAdapter extends RecyclerView.Adapter<HomeRecentPostAd
             mainHolder.btnFav.setImageResource(R.drawable.ic_un_fav);
         }
 
+        if (model.getIsNeedPoint()) {
+            mainHolder.pointLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            mainHolder.pointLayout.setVisibility(View.GONE);
+        }
         mainHolder.tvTitle.setText(Html.fromHtml(model.getTitle()));
     }
 }

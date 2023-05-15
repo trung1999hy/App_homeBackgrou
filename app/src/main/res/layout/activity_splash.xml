@@ -42,6 +42,7 @@
             android:layout_marginTop="@dimen/margin_10dp"
             android:fontFamily="sans-serif-smallcaps"
             android:gravity="center"
+            android:visibility="gone"
             android:text="@string/tagline"
             android:textColor="@color/black"
             android:textSize="13sp" />
