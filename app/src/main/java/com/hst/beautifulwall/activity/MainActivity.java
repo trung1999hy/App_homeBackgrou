@@ -252,12 +252,17 @@ public class MainActivity extends BaseActivity {
                         }
                         break;
                     case R.id.card_view_top:
-                        if (MyApplication.getInstance().getValueCoin() >= 2) {
-                            MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
-                            ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mHomeRecentPostList, position, false);
+                        if (model.getIsNeedPoint()) {
+                            if (MyApplication.getInstance().getValueCoin() >= 2) {
+                                MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
+                                ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mHomeRecentPostList, position, false);
+                            }
+                            else {
+                                Toast.makeText(MainActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+                            }
                         }
                         else {
-                            Toast.makeText(MainActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+                            ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mHomeRecentPostList, position, false);
                         }
                         break;
                     default:
@@ -415,14 +420,17 @@ public class MainActivity extends BaseActivity {
                 mPostsPagerAdapter.setItemClickListener(new ListItemClickListener() {
                     @Override
                     public void onItemClick(int position, View view) {
-                        if (MyApplication.getInstance().getValueCoin() >= 2) {
-                            MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
-                            ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mFeaturedList, position, false);
+                        if (mFeaturedList.get(position).getIsNeedPoint()){
+                            if (MyApplication.getInstance().getValueCoin() >= 2) {
+                                MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
+                                ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mFeaturedList, position, false);
+                            }
+                            else {
+                                Toast.makeText(MainActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+                            }
                         }
-                        else {
-                            Toast.makeText(MainActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
-                        }
-
+                        else
+                        ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mFeaturedList, position, false);
                     }
                 });
                 if (mFeaturedList.size() > 0) {

@@ -76,10 +76,10 @@ public class WallPreviewActivity extends BaseActivity {
         mBtnSetWall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager manager = getSupportFragmentManager();
-                DialogUtilities dialog = DialogUtilities.newInstance(getString(R.string.information), getString(R.string.information_detail), getString(R.string.yes), getString(R.string.no), AppConstant.BUNDLE_KEY_YES);
-                dialog.show(manager, AppConstant.BUNDLE_KEY_DIALOG_FRAGMENT);
-                //ActivityUtilities.getInstance().invokeWallPreviewNCropSetActiviy(mActivity, WallCropNSetActivity.class, mImgUrl, true);
+                //FragmentManager manager = getSupportFragmentManager();
+                //DialogUtilities dialog = DialogUtilities.newInstance(getString(R.string.information), getString(R.string.information_detail), getString(R.string.yes), getString(R.string.no), AppConstant.BUNDLE_KEY_YES);
+                //dialo.show(manager, AppConstant.BUNDLE_KEY_DIALOG_FRAGMENT);
+                ActivityUtilities.getInstance().invokeWallPreviewNCropSetActiviy(mActivity, WallCropNSetActivity.class, mImgUrl, true);
             }
         });
     }
@@ -87,12 +87,7 @@ public class WallPreviewActivity extends BaseActivity {
     @Override
     public void onComplete(Boolean isOkPressed, String viewIdText) {
         if (viewIdText.equals(AppConstant.BUNDLE_KEY_YES)) {
-            if (MyApplication.getInstance().getValueCoin() >= 2) {
-                MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
-                ActivityUtilities.getInstance().invokeWallPreviewNCropSetActiviy(mActivity, WallCropNSetActivity.class, mImgUrl, true);
-            } else {
-                Toast.makeText(this, "You need point to use this image!", Toast.LENGTH_LONG).show();
-            }
+            ActivityUtilities.getInstance().invokeWallPreviewNCropSetActiviy(mActivity, WallCropNSetActivity.class, mImgUrl, true);
         }
     }
 

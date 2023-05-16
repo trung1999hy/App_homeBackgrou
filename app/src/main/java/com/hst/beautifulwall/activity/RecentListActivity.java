@@ -111,13 +111,20 @@ public class RecentListActivity extends BaseActivity {
                         }
                         break;
                     case R.id.card_view_top:
-                        if (MyApplication.getInstance().getValueCoin() >= 2) {
-                            MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
-                            ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mContentList, position, false);
+                        if (model.getIsNeedPoint()) {
+                            if (MyApplication.getInstance().getValueCoin() >= 2 && model.getIsNeedPoint()) {
+                                MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
+                                ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mContentList, position, false);
+                            }
+                            else {
+                                Toast.makeText(RecentListActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+                            }
                         }
                         else {
-                            Toast.makeText(RecentListActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+                            ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mContentList, position, false);
+
                         }
+
 
                         break;
                     default:

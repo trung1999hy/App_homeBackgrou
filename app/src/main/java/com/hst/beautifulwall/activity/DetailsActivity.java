@@ -99,7 +99,7 @@ public class DetailsActivity extends BaseActivity {
     private void initFunctionality() {
         showLoader();
 
-        mPagerAdapter = new PostsPagerAdapter(mActivity, mItemList);
+        mPagerAdapter = new PostsPagerAdapter(mActivity, mItemList, true);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(mCurrentIndex);
 
@@ -234,7 +234,7 @@ public class DetailsActivity extends BaseActivity {
     @Override
     public void onComplete(Boolean isOkPressed, String viewIdText) {
         if (viewIdText.equals(AppConstant.BUNDLE_KEY_YES)) {
-            if (MyApplication.getInstance().getValueCoin() >= 2) {
+            if (MyApplication.getInstance().getValueCoin() >= 2 ) {
                 MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
                 ActivityUtilities.getInstance().invokeWallPreviewNCropSetActiviy(mActivity, WallCropNSetActivity.class, mItemList.get(mViewPager.getCurrentItem()).getImageUrl(), false);
             }

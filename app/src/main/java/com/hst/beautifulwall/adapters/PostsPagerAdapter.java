@@ -27,9 +27,18 @@ public class PostsPagerAdapter extends PagerAdapter {
 
     private LayoutInflater inflater;
 
+    private boolean isFromDetail = false;
+
     public PostsPagerAdapter(Context mContext, ArrayList<Posts> mItemList) {
         this.mContext = mContext;
         this.mItemList = mItemList;
+        inflater = LayoutInflater.from(mContext);
+    }
+
+    public PostsPagerAdapter(Context mContext, ArrayList<Posts> mItemList, boolean isFormDetail) {
+        this.mContext = mContext;
+        this.mItemList = mItemList;
+        this.isFromDetail =isFormDetail;
         inflater = LayoutInflater.from(mContext);
     }
 
@@ -64,7 +73,7 @@ public class PostsPagerAdapter extends PagerAdapter {
                     .into(imgPost);
         }
 
-        if (model.getIsNeedPoint()) {
+        if (model.getIsNeedPoint() && !isFromDetail) {
             pointLayout.setVisibility(View.VISIBLE);
         }
         else {
