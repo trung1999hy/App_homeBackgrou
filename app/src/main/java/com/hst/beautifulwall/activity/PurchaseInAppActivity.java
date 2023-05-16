@@ -114,12 +114,6 @@ public class PurchaseInAppActivity extends AppCompatActivity implements Purchase
                         adapter.setData(this, productDetailsList);
                         if (prodDetailsList.size() == 0)
                             Toast.makeText(PurchaseInAppActivity.this, "prodDetailsList, size = 0", Toast.LENGTH_SHORT).show();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                onBackPressed();
-                            }
-                        });
                     }, 2000);
                 }
         );
