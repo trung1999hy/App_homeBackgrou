@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -21,6 +23,10 @@ import com.hst.beautifulwall.adapters.HomeRecentPostAdapter;
 import com.hst.beautifulwall.app.MyApplication;
 import com.hst.beautifulwall.data.constant.AppConstant;
 import com.hst.beautifulwall.data.sqlite.FavoriteDbController;
+import com.hst.beautifulwall.io.APIClient;
+import com.hst.beautifulwall.io.APIInterface;
+import com.hst.beautifulwall.io.model.Image;
+import com.hst.beautifulwall.io.model.WallResponse;
 import com.hst.beautifulwall.listeners.ListItemClickListener;
 import com.hst.beautifulwall.models.content.Posts;
 import com.hst.beautifulwall.models.favorite.FavoriteModel;
@@ -28,6 +34,11 @@ import com.hst.beautifulwall.utility.ActivityUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class RecentListActivity extends BaseActivity {
 
@@ -148,21 +159,38 @@ public class RecentListActivity extends BaseActivity {
     }
 
     private void loadPostsFromFirebase() {
-        mDatabaseReference.child(AppConstant.JSON_KEY_IMAGES).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot contentSnapShot : dataSnapshot.getChildren()) {
-                    Posts post = contentSnapShot.getValue(Posts.class);
-                    mContentList.add(post);
-                }
-                updateUI();
-            }
+        Retrofit apiClient = APIClient.Companion.getRetrofit();
+        if (apiClient != null) {
+            APIInterface apiInterface = apiClient.create(APIInterface.class);
+            apiInterface.getImages().enqueue(new Callback<WallResponse<Image>>() {
+                @Override
+                public void onResponse(Call<WallResponse<Image>> call, Response<WallResponse<Image>> response) {
+                    Log.d("Thuchs", response.code() + "");
+                    if (response.isSuccessful() && response.code() == 200) {
+                        WallResponse<Image> wallResponse = response.body();
+                        if (wallResponse != null) {
+                            for (int i =0 ; i < wallResponse.getData().size(); i++) {
+                                mContentList.add(wallResponse.getData().get(i).toPost());
+                            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                showEmptyView();
-            }
-        });
+                            updateUI();
+                        }
+                        else {
+                            showEmptyView();
+                        }
+                    }
+                    else {
+                        showEmptyView();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<WallResponse<Image>> call, Throwable t) {
+                    Log.d("Thuchs", t.toString());
+                    showEmptyView();
+                }
+            });
+        }
     }
 
     private void updateUI() {

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -20,16 +21,27 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hst.beautifulwall.R;
 import com.hst.beautifulwall.adapters.HomeRecentPostAdapter;
+import com.hst.beautifulwall.adapters.PostsPagerAdapter;
 import com.hst.beautifulwall.app.MyApplication;
 import com.hst.beautifulwall.data.constant.AppConstant;
 import com.hst.beautifulwall.data.sqlite.FavoriteDbController;
+import com.hst.beautifulwall.io.APIClient;
+import com.hst.beautifulwall.io.APIInterface;
+import com.hst.beautifulwall.io.model.Image;
+import com.hst.beautifulwall.io.model.WallResponse;
 import com.hst.beautifulwall.listeners.ListItemClickListener;
 import com.hst.beautifulwall.models.content.Posts;
 import com.hst.beautifulwall.models.favorite.FavoriteModel;
 import com.hst.beautifulwall.utility.ActivityUtilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class CategoryWisePostListActivity extends BaseActivity {
 
@@ -154,28 +166,44 @@ public class CategoryWisePostListActivity extends BaseActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference();
     }
-
     private void loadPostsFromFirebase() {
-        mDatabaseReference.child(AppConstant.JSON_KEY_IMAGES).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot contentSnapShot : dataSnapshot.getChildren()) {
-                    Posts post = contentSnapShot.getValue(Posts.class);
-                    mContentList.add(post);
-                }
-                for (int i = 0; i < mContentList.size(); i++) {
-                    if (mContentList.get(i).getCategory().equals(mCategoryName)) {
-                        mCatWisePostList.add(mContentList.get(i));
+        Retrofit apiClient = APIClient.Companion.getRetrofit();
+        if (apiClient != null) {
+            APIInterface apiInterface = apiClient.create(APIInterface.class);
+            apiInterface.getImages().enqueue(new Callback<WallResponse<Image>>() {
+                @Override
+                public void onResponse(Call<WallResponse<Image>> call, Response<WallResponse<Image>> response) {
+                    Log.d("Thuchs", response.code() + "");
+                    if (response.isSuccessful() && response.code() == 200) {
+                        WallResponse<Image> wallResponse = response.body();
+                        if (wallResponse != null) {
+                            for (int i =0 ; i < wallResponse.getData().size(); i++) {
+                                mContentList.add(wallResponse.getData().get(i).toPost());
+                            }
+
+                            for (int i = 0; i < mContentList.size(); i++) {
+                                if (mContentList.get(i).getCategory().equals(mCategoryName)) {
+                                    mCatWisePostList.add(mContentList.get(i));
+                                }
+                            }
+                            updateUI();
+                        }
+                        else {
+                            showEmptyView();
+                        }
+                    }
+                    else {
+                        showEmptyView();
                     }
                 }
-                updateUI();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                showEmptyView();
-            }
-        });
+                @Override
+                public void onFailure(Call<WallResponse<Image>> call, Throwable t) {
+                    Log.d("Thuchs", t.toString());
+                    showEmptyView();
+                }
+            });
+        }
     }
 
     private void updateUI() {

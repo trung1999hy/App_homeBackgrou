@@ -18,11 +18,20 @@ import com.google.firebase.database.ValueEventListener;
 import com.hst.beautifulwall.R;
 import com.hst.beautifulwall.adapters.CategoryAdapter;
 import com.hst.beautifulwall.data.constant.AppConstant;
+import com.hst.beautifulwall.io.APIClient;
+import com.hst.beautifulwall.io.APIInterface;
+import com.hst.beautifulwall.io.model.Category;
+import com.hst.beautifulwall.io.model.WallResponse;
 import com.hst.beautifulwall.listeners.ListItemClickListener;
 import com.hst.beautifulwall.models.content.Categories;
 import com.hst.beautifulwall.utility.ActivityUtilities;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class CategoryListActivity extends BaseActivity {
 
@@ -107,22 +116,37 @@ public class CategoryListActivity extends BaseActivity {
     }
 
     private void loadCategoriesFromFirebase() {
-        mDatabaseReference.child(AppConstant.JSON_KEY_CATEGORIES).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot contentSnapShot : dataSnapshot.getChildren()) {
-                    Categories category = contentSnapShot.getValue(Categories.class);
-                    mCategoryList.add(category);
+        Retrofit apiClient = APIClient.Companion.getRetrofit();
+        if (apiClient != null) {
+            APIInterface apiInterface = apiClient.create(APIInterface.class);
+            apiInterface.getCategories().enqueue(new Callback<WallResponse<Category>>() {
+                @Override
+                public void onResponse(Call<WallResponse<Category>> call, Response<WallResponse<Category>> response) {
+                    if (response.isSuccessful() && response.code() == 200) {
+                        WallResponse<Category> wallResponse = response.body();
+                        if (wallResponse != null && wallResponse.getSuccess()) {
+                            for (int i=0; i < wallResponse.getData().size() ; i++) {
+                                mCategoryList.add(wallResponse.getData().get(i).toCategory());
+                            }
+                            hideLoader();
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        else {
+                            showEmptyView();
+                        }
+                    }
+                    else {
+                        showEmptyView();
+                    }
                 }
-                hideLoader();
-                mAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                showEmptyView();
-            }
-        });
+                @Override
+                public void onFailure(Call<WallResponse<Category>> call, Throwable t) {
+                    showEmptyView();
+                }
+            });
+        }
+
     }
 
     @Override

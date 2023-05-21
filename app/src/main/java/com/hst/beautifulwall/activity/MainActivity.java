@@ -17,19 +17,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.hst.beautifulwall.R;
 import com.hst.beautifulwall.adapters.HomeCategoryAdapter;
 import com.hst.beautifulwall.adapters.PostsPagerAdapter;
@@ -38,6 +32,11 @@ import com.hst.beautifulwall.app.MyApplication;
 import com.hst.beautifulwall.data.constant.AppConstant;
 import com.hst.beautifulwall.data.sqlite.FavoriteDbController;
 import com.hst.beautifulwall.data.sqlite.NotificationDbController;
+import com.hst.beautifulwall.io.APIClient;
+import com.hst.beautifulwall.io.APIInterface;
+import com.hst.beautifulwall.io.model.Category;
+import com.hst.beautifulwall.io.model.Image;
+import com.hst.beautifulwall.io.model.WallResponse;
 import com.hst.beautifulwall.listeners.ListItemClickListener;
 import com.hst.beautifulwall.models.content.Categories;
 import com.hst.beautifulwall.models.content.Posts;
@@ -50,6 +49,11 @@ import com.hst.beautifulwall.utility.RateItDialogFragment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends BaseActivity {
 
@@ -88,10 +92,6 @@ public class MainActivity extends BaseActivity {
     private FavoriteDbController mFavoriteDbController;
 
     private TextView mViewAllFeatured, mViewAllRecent;
-
-    // Firebase Database
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -316,9 +316,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initFirebase() {
-        FirebaseApp.initializeApp(this);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference();
     }
 
     private void updateUI() {
@@ -369,86 +366,117 @@ public class MainActivity extends BaseActivity {
     }
 
     private void loadCategoriesFromFirebase() {
-        mDatabaseReference.child(AppConstant.JSON_KEY_CATEGORIES).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot contentSnapShot : dataSnapshot.getChildren()) {
-                    Categories category = contentSnapShot.getValue(Categories.class);
-                    mCategoryList.add(category);
+        Retrofit apiClient = APIClient.Companion.getRetrofit();
+        if (apiClient != null) {
+            APIInterface apiInterface = apiClient.create(APIInterface.class);
+            apiInterface.getCategories().enqueue(new Callback<WallResponse<Category>>() {
+                @Override
+                public void onResponse(Call<WallResponse<Category>> call, Response<WallResponse<Category>> response) {
+                    if (response.isSuccessful() && response.code() == 200) {
+                        WallResponse<Category> wallResponse = response.body();
+                        if (wallResponse != null && wallResponse.getSuccess()) {
+                            for (int i=0; i < wallResponse.getData().size() ; i++) {
+                                mCategoryList.add(wallResponse.getData().get(i).toCategory());
+                            }
+                            mLytCategory.setVisibility(View.VISIBLE);
+                            mLytMain.setVisibility(View.VISIBLE);
+                            mHomeCategoryAdapter.notifyDataSetChanged();
+                        }
+                        else {
+                            showEmptyView();
+                        }
+                    }
+                    else {
+                        showEmptyView();
+                    }
                 }
-                mLytCategory.setVisibility(View.VISIBLE);
-                mLytMain.setVisibility(View.VISIBLE);
-                mHomeCategoryAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                showEmptyView();
-            }
-        });
+                @Override
+                public void onFailure(Call<WallResponse<Category>> call, Throwable t) {
+                    showEmptyView();
+                }
+            });
+        }
+
     }
 
     private void loadPostsFromFirebase() {
-        mDatabaseReference.child(AppConstant.JSON_KEY_IMAGES).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot contentSnapShot : dataSnapshot.getChildren()) {
-                    Posts post = contentSnapShot.getValue(Posts.class);
-                    mRecentPostList.add(post);
-                }
-
-                Collections.shuffle(mRecentPostList);
-
-                int maxLoop;
-                if (AppConstant.BUNDLE_KEY_HOME_INDEX > mRecentPostList.size()) {
-                    maxLoop = mRecentPostList.size();
-                } else {
-                    maxLoop = AppConstant.BUNDLE_KEY_HOME_INDEX;
-                }
-                for (int i = 0; i < maxLoop; i++) {
-                    mHomeRecentPostList.add(mRecentPostList.get(i));
-                }
-
-                for (int i = 0; i < mRecentPostList.size(); i++) {
-                    if (mRecentPostList.get(i).getIsFeatured().equals(AppConstant.JSON_KEY_YES)) {
-                        mFeaturedList.add(mRecentPostList.get(i));
-                    }
-                }
-                Collections.shuffle(mFeaturedList);
-                mPostsPagerAdapter = new PostsPagerAdapter(mActivity, (ArrayList<Posts>) mFeaturedList);
-                mFeaturedPager.setAdapter(mPostsPagerAdapter);
-                mPostsPagerAdapter.setItemClickListener(new ListItemClickListener() {
-                    @Override
-                    public void onItemClick(int position, View view) {
-                        if (mFeaturedList.get(position).getIsNeedPoint()){
-                            if (MyApplication.getInstance().getValueCoin() >= 2) {
-                                MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
-                                ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mFeaturedList, position, false);
+        Retrofit apiClient = APIClient.Companion.getRetrofit();
+        if (apiClient != null) {
+            APIInterface apiInterface = apiClient.create(APIInterface.class);
+            apiInterface.getImages().enqueue(new Callback<WallResponse<Image>>() {
+                @Override
+                public void onResponse(Call<WallResponse<Image>> call, Response<WallResponse<Image>> response) {
+                    Log.d("Thuchs", response.code() + "");
+                    if (response.isSuccessful() && response.code() == 200) {
+                        WallResponse<Image> wallResponse = response.body();
+                        if (wallResponse != null) {
+                            for (int i =0 ; i < wallResponse.getData().size(); i++) {
+                                mRecentPostList.add(wallResponse.getData().get(i).toPost());
                             }
-                            else {
-                                Toast.makeText(MainActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+
+                            Collections.shuffle(mRecentPostList);
+
+                            int maxLoop;
+                            if (AppConstant.BUNDLE_KEY_HOME_INDEX > mRecentPostList.size()) {
+                                maxLoop = mRecentPostList.size();
+                            } else {
+                                maxLoop = AppConstant.BUNDLE_KEY_HOME_INDEX;
+                            }
+                            for (int i = 0; i < maxLoop; i++) {
+                                mHomeRecentPostList.add(mRecentPostList.get(i));
+                            }
+
+                            for (int i = 0; i < mRecentPostList.size(); i++) {
+                                if (mRecentPostList.get(i).getIsFeatured().equals(AppConstant.JSON_KEY_YES)) {
+                                    mFeaturedList.add(mRecentPostList.get(i));
+                                }
+                            }
+                            Collections.shuffle(mFeaturedList);
+                            mPostsPagerAdapter = new PostsPagerAdapter(mActivity, (ArrayList<Posts>) mFeaturedList);
+                            mFeaturedPager.setAdapter(mPostsPagerAdapter);
+                            mPostsPagerAdapter.setItemClickListener(new ListItemClickListener() {
+                                @Override
+                                public void onItemClick(int position, View view) {
+                                    if (mFeaturedList.get(position).getIsNeedPoint()){
+                                        if (MyApplication.getInstance().getValueCoin() >= 2) {
+                                            MyApplication.getInstance().setValueCoin(MyApplication.getInstance().getValueCoin() - 2);
+                                            ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mFeaturedList, position, false);
+                                        }
+                                        else {
+                                            Toast.makeText(MainActivity.this, "You need more coin to using this image!", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                    else
+                                        ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mFeaturedList, position, false);
+                                }
+                            });
+                            if (mFeaturedList.size() > 0) {
+                                mLytFeatured.setVisibility(View.VISIBLE);
+                            }
+
+                            updateUI();
+
+                            if (mRecentPostList.size() > 0) {
+                                mLytRecent.setVisibility(View.VISIBLE);
                             }
                         }
-                        else
-                        ActivityUtilities.getInstance().invokeDetailsActiviy(mActivity, DetailsActivity.class, mFeaturedList, position, false);
+                        else {
+                            showEmptyView();
+                        }
                     }
-                });
-                if (mFeaturedList.size() > 0) {
-                    mLytFeatured.setVisibility(View.VISIBLE);
+                    else {
+                        showEmptyView();
+                    }
                 }
 
-                updateUI();
-
-                if (mRecentPostList.size() > 0) {
-                    mLytRecent.setVisibility(View.VISIBLE);
+                @Override
+                public void onFailure(Call<WallResponse<Image>> call, Throwable t) {
+                    Log.d("Thuchs", t.toString());
+                    showEmptyView();
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                showEmptyView();
-            }
-        });
+            });
+        }
     }
 
     public void initNotification() {

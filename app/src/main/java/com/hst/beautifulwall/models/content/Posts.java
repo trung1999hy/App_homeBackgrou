@@ -14,6 +14,15 @@ public class Posts implements Parcelable {
     public Posts() {
     }
 
+    public Posts(String title, String category, String isFeatured, String imageUrl, boolean isNeedPoint) {
+        this.title = title;
+        this.category = category;
+        this.isFeatured = isFeatured;
+        this.imageUrl = imageUrl;
+        this.isFavorite = isFavorite;
+        this.isNeedPoint = isNeedPoint;
+    }
+
     public Posts(String title, String category, String isFeatured, String imageUrl, boolean isFavorite, boolean isNeedPoint) {
         this.title = title;
         this.category = category;

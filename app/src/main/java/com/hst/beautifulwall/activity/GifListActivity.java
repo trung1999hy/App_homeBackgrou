@@ -21,6 +21,11 @@ import com.hst.beautifulwall.adapters.HomeRecentPostAdapter;
 import com.hst.beautifulwall.app.MyApplication;
 import com.hst.beautifulwall.data.constant.AppConstant;
 import com.hst.beautifulwall.data.sqlite.FavoriteDbController;
+import com.hst.beautifulwall.io.APIClient;
+import com.hst.beautifulwall.io.APIInterface;
+import com.hst.beautifulwall.io.model.Category;
+import com.hst.beautifulwall.io.model.Gif;
+import com.hst.beautifulwall.io.model.WallResponse;
 import com.hst.beautifulwall.listeners.ListItemClickListener;
 import com.hst.beautifulwall.models.content.Posts;
 import com.hst.beautifulwall.models.favorite.FavoriteModel;
@@ -28,6 +33,11 @@ import com.hst.beautifulwall.utility.ActivityUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class GifListActivity extends BaseActivity {
 
@@ -145,21 +155,34 @@ public class GifListActivity extends BaseActivity {
     }
 
     private void loadPostsFromFirebase() {
-        mDatabaseReference.child(AppConstant.JSON_KEY_GIFS).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot contentSnapShot : dataSnapshot.getChildren()) {
-                    Posts post = contentSnapShot.getValue(Posts.class);
-                    mContentList.add(post);
+        Retrofit apiClient = APIClient.Companion.getRetrofit();
+        if (apiClient != null) {
+            APIInterface apiInterface = apiClient.create(APIInterface.class);
+            apiInterface.getGifs().enqueue(new Callback<WallResponse<Gif>>() {
+                @Override
+                public void onResponse(Call<WallResponse<Gif>> call, Response<WallResponse<Gif>> response) {
+                    if (response.isSuccessful() && response.code() == 200) {
+                        WallResponse<Gif> wallResponse = response.body();
+                        if (wallResponse != null && wallResponse.getSuccess()) {
+                            for (int i = 0; i < wallResponse.getData().size(); i++) {
+                                mContentList.add(wallResponse.getData().get(i).toPost());
+                            }
+                            updateUI();
+                        } else {
+                            showEmptyView();
+                        }
+                    }
+                    else {
+                        showEmptyView();
+                    }
                 }
-                updateUI();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                showEmptyView();
-            }
-        });
+                @Override
+                public void onFailure(Call<WallResponse<Gif>> call, Throwable t) {
+                    showEmptyView();
+                }
+            });
+        }
     }
 
     private void updateUI() {

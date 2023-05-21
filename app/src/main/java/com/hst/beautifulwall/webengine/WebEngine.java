@@ -69,10 +69,10 @@ public class WebEngine {
     public void initWebView() {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setAppCacheMaxSize(AppConstant.SITE_CACHE_SIZE);
-        webView.getSettings().setAppCachePath(mContext.getCacheDir().getAbsolutePath());
+       // webView.getSettings().setAppCacheMaxSize(AppConstant.SITE_CACHE_SIZE);
+        //webView.getSettings().setAppCachePath(mContext.getCacheDir().getAbsolutePath());
         webView.getSettings().setAllowFileAccess(true);
-        webView.getSettings().setAppCacheEnabled(true);
+       // webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setDomStorageEnabled(true);
