@@ -13,11 +13,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.hst.beautifulwall.R;
 import com.hst.beautifulwall.adapters.HomeRecentPostAdapter;
 import com.hst.beautifulwall.app.MyApplication;
@@ -52,10 +47,6 @@ public class RecentListActivity extends BaseActivity {
     // Favourites view
     private List<FavoriteModel> mFavoriteList;
     private FavoriteDbController mFavoriteDbController;
-
-    // Firebase Database
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
 
 
     @Override
@@ -154,8 +145,6 @@ public class RecentListActivity extends BaseActivity {
 
     private void initFirebase() {
         FirebaseApp.initializeApp(this);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference();
     }
 
     private void loadPostsFromFirebase() {

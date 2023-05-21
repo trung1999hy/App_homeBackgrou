@@ -11,19 +11,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.hst.beautifulwall.R;
 import com.hst.beautifulwall.adapters.HomeRecentPostAdapter;
 import com.hst.beautifulwall.app.MyApplication;
-import com.hst.beautifulwall.data.constant.AppConstant;
 import com.hst.beautifulwall.data.sqlite.FavoriteDbController;
 import com.hst.beautifulwall.io.APIClient;
 import com.hst.beautifulwall.io.APIInterface;
-import com.hst.beautifulwall.io.model.Category;
 import com.hst.beautifulwall.io.model.Gif;
 import com.hst.beautifulwall.io.model.WallResponse;
 import com.hst.beautifulwall.listeners.ListItemClickListener;
@@ -51,10 +44,6 @@ public class GifListActivity extends BaseActivity {
     // Favourites view
     private List<FavoriteModel> mFavoriteList;
     private FavoriteDbController mFavoriteDbController;
-
-    // Firebase Database
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
 
 
     @Override
@@ -150,8 +139,6 @@ public class GifListActivity extends BaseActivity {
 
     private void initFirebase() {
         FirebaseApp.initializeApp(this);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference();
     }
 
     private void loadPostsFromFirebase() {

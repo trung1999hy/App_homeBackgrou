@@ -10,14 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.hst.beautifulwall.R;
 import com.hst.beautifulwall.adapters.CategoryAdapter;
-import com.hst.beautifulwall.data.constant.AppConstant;
 import com.hst.beautifulwall.io.APIClient;
 import com.hst.beautifulwall.io.APIInterface;
 import com.hst.beautifulwall.io.model.Category;
@@ -41,11 +35,6 @@ public class CategoryListActivity extends BaseActivity {
     private ArrayList<Categories> mCategoryList;
     private CategoryAdapter mAdapter = null;
     private RecyclerView mRecycler;
-
-    // Firebase Database
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +100,6 @@ public class CategoryListActivity extends BaseActivity {
 
     private void initFirebase() {
         FirebaseApp.initializeApp(this);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference();
     }
 
     private void loadCategoriesFromFirebase() {
