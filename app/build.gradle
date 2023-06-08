@@ -4,12 +4,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 33
     buildToolsVersion '32.1.0-rc1'
     defaultConfig {
         applicationId "com.hst.beautifulwall"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 32
         versionCode 3
         versionName "3.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -47,7 +47,7 @@ dependencies {
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
-    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:1.10.1'
     def billing_version = "5.0.0"
     implementation "com.android.billingclient:billing:$billing_version"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
